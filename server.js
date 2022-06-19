@@ -18,4 +18,8 @@ MongoClient.connect(dbConnectionStr).then((client) => {
   collection = db.collection("movies");
 });
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
+
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
