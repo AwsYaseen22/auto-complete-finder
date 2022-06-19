@@ -22,4 +22,39 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
+app.get("/search", async (req, res) => {
+  try {
+    let result = await collection
+      .aggregate([
+        {
+          $Search: {
+            autocomplete: {
+              query: `${req.query.query}`,
+              path: "title",
+              fuzzy: {
+                maxEdits: 2,
+                prefixLength: 3,
+              },
+            },
+          },
+        },
+      ])
+      .toArray();
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+app.get("/get/:id", async (req, res) => {
+  try {
+    let result = await collection.findOne({
+      _id: ObjectId(req.params.id),
+    });
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
