@@ -29,6 +29,7 @@ app.get("/search", async (request,response) => {
         let result = await collection.aggregate([
             {
                 "$search" : {
+                    "index": "autocomplete",
                     "autocomplete" : {
                         "query": `${request.query.query}`,
                         "path": "title",
